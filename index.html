@@ -8,15 +8,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
 <style>
   :root{
-    --deep-navy:#0A2A4A;
-    --ocean:#0EA5C4;
-    --sky:#8FE3FF;
+    --ocean:#22B2E6;
+    --ocean-deep:#0F8FC7;
+    --sky:#B6ECFF;
+    --sky-pale:#E6F9FF;
     --coral:#FF6B6B;
     --sun:#FFD166;
-    --sand:#FFF6E5;
+    --sand:#FFFFFF;
     --foam:#EAFBFF;
-    --ink:#0A2A4A;
-    --shadow: 0 10px 25px rgba(10,42,74,0.18);
+    --ink:#0F4C75;
+    --ink-soft:#3E7C99;
+    --shadow: 0 10px 25px rgba(15,143,199,0.18);
   }
 
   *{box-sizing:border-box;}
@@ -27,8 +29,9 @@
     font-family:'Gowun Dodum', sans-serif;
     color:var(--ink);
     background:
-      radial-gradient(circle at 15% 10%, rgba(255,209,102,0.35), transparent 40%),
-      linear-gradient(180deg, var(--sky) 0%, var(--ocean) 45%, var(--deep-navy) 100%);
+      radial-gradient(circle at 15% 8%, rgba(255,209,102,0.45), transparent 42%),
+      radial-gradient(circle at 85% 90%, rgba(255,255,255,0.5), transparent 45%),
+      linear-gradient(180deg, var(--sky-pale) 0%, var(--sky) 45%, var(--ocean) 100%);
     overflow-x:hidden;
     position:relative;
   }
@@ -42,9 +45,9 @@
   .floaters span{
     position:absolute;
     font-size:2rem;
-    opacity:0.55;
+    opacity:0.6;
     animation: drift 14s ease-in-out infinite;
-    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
+    filter: drop-shadow(0 4px 6px rgba(15,76,117,0.15));
   }
   @keyframes drift{
     0%   { transform: translateY(0) translateX(0) rotate(0deg); }
@@ -76,7 +79,7 @@
     position:absolute; left:0; bottom:0; width:100%;
     height:0%;
     transition: height 0.6s cubic-bezier(.4,1.4,.6,1);
-    background: linear-gradient(180deg, rgba(255,255,255,0.5), var(--ocean) 60%);
+    background: linear-gradient(180deg, rgba(255,255,255,0.6), var(--ocean) 60%);
   }
   .tide-wave-svg{
     position:absolute; top:-18px; left:0; width:200%; height:20px;
@@ -89,13 +92,14 @@
   .tide-label{
     position:fixed; bottom:76px; left:50%; transform:translateX(-50%);
     background: var(--sand);
-    color:var(--deep-navy);
+    color:var(--ink);
     padding:6px 14px;
     border-radius:20px;
     font-size:0.8rem;
     box-shadow:var(--shadow);
     z-index:6;
     white-space:nowrap;
+    border: 2px solid var(--sky);
   }
 
   /* 카드 공통 */
@@ -105,7 +109,7 @@
     box-shadow: var(--shadow);
     padding:32px 24px;
     position:relative;
-    border: 3px solid rgba(255,255,255,0.6);
+    border: 3px solid var(--sky);
   }
 
   /* ---------- 인트로 ---------- */
@@ -131,13 +135,13 @@
   .title-main{
     font-size:2.3rem;
     line-height:1.35;
-    color:white;
-    text-shadow: 0 3px 0 rgba(10,42,74,0.35);
+    color:var(--ink);
+    text-shadow: 0 2px 0 rgba(255,255,255,0.8);
     margin:0;
   }
-  .title-main .hi{ color:var(--sun); }
+  .title-main .hi{ color:var(--ocean-deep); }
   .sub-desc{
-    color:var(--foam);
+    color:var(--ink-soft);
     font-size:1.02rem;
     line-height:1.6;
     max-width:440px;
@@ -149,6 +153,7 @@
     margin:0 0 18px;
     line-height:1.7;
     font-size:0.98rem;
+    color: var(--ink);
   }
   .big-btn{
     display:inline-block;
@@ -156,33 +161,58 @@
     cursor:pointer;
     font-family:'Jua', sans-serif;
     font-size:1.15rem;
-    color:var(--deep-navy);
+    color:var(--ink);
     background: linear-gradient(180deg, var(--sun), #ffb703);
     padding:16px 34px;
     border-radius:50px;
-    box-shadow: 0 8px 0 #d98c00, 0 12px 20px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 0 #d98c00, 0 12px 20px rgba(0,0,0,0.15);
     transition: transform .12s ease, box-shadow .12s ease;
   }
   .big-btn:active{
     transform: translateY(6px);
-    box-shadow: 0 2px 0 #d98c00, 0 4px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 0 #d98c00, 0 4px 10px rgba(0,0,0,0.15);
   }
   .mini-hint{
     font-size:0.82rem;
-    color:rgba(255,255,255,0.75);
+    color: var(--ink-soft);
     margin-top:6px;
   }
 
   /* ---------- 퀴즈 ---------- */
   #screen-quiz{ display:none; flex:1; flex-direction:column; justify-content:center; gap:18px; }
+  .quiz-top-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    position:relative;
+  }
+  .back-btn{
+    position:absolute;
+    left:0;
+    border:2px solid var(--sand);
+    background: rgba(255,255,255,0.5);
+    color:var(--ink);
+    font-family:'Jua', sans-serif;
+    padding:8px 14px;
+    border-radius:40px;
+    cursor:pointer;
+    font-size:0.85rem;
+    box-shadow: var(--shadow);
+    transition: transform .12s ease;
+  }
+  .back-btn:hover{ transform: translateX(-3px); }
   .q-progress-text{
-    color:var(--sand);
+    color:var(--ink);
     font-family:'Jua', sans-serif;
     text-align:center;
     font-size:0.95rem;
+    background: rgba(255,255,255,0.6);
+    padding:4px 14px;
+    border-radius:20px;
   }
   .q-number{
-    color: var(--sun);
+    color: var(--ocean-deep);
     font-family:'Jua', sans-serif;
     font-size:0.95rem;
     margin-bottom:6px;
@@ -192,6 +222,7 @@
     font-size:1.28rem;
     line-height:1.55;
     margin:0 0 22px;
+    color:var(--ink);
   }
   .options{ display:flex; flex-direction:column; gap:12px; }
   .opt-btn{
@@ -227,10 +258,11 @@
   .result-title{
     font-size:1.9rem;
     margin:0 0 6px;
+    color:var(--ink);
   }
   .result-item{
     font-size:0.95rem;
-    color:#5b7182;
+    color:var(--ink-soft);
     margin-bottom:14px;
   }
   .result-desc{
@@ -241,6 +273,7 @@
     border-radius:18px;
     padding:18px 20px;
     margin-bottom:16px;
+    color:var(--ink);
   }
   .stat-row{
     display:flex;
@@ -252,7 +285,7 @@
   .stat-label{
     width:92px;
     font-size:0.85rem;
-    color:var(--deep-navy);
+    color:var(--ink);
     flex-shrink:0;
   }
   .stat-track{
@@ -278,19 +311,20 @@
   }
   .ghost-btn{
     border:2px solid var(--sand);
-    background: rgba(255,255,255,0.15);
-    color:var(--sand);
+    background: rgba(255,255,255,0.6);
+    color:var(--ink);
     font-family:'Jua', sans-serif;
     padding:12px 20px;
     border-radius:40px;
     cursor:pointer;
     font-size:0.95rem;
+    box-shadow: var(--shadow);
   }
-  .ghost-btn:hover{ background: rgba(255,255,255,0.3); }
+  .ghost-btn:hover{ background: rgba(255,255,255,0.9); }
   .copy-toast{
     position:fixed;
     bottom:20px; left:50%; transform:translateX(-50%);
-    background: var(--deep-navy);
+    background: var(--ink);
     color:white;
     padding:10px 18px;
     border-radius:20px;
@@ -304,7 +338,7 @@
 
   footer.credit{
     text-align:center;
-    color:rgba(255,255,255,0.55);
+    color: var(--ink-soft);
     font-size:0.75rem;
     margin-top:24px;
   }
@@ -346,7 +380,10 @@
 
   <!-- 퀴즈 -->
   <section id="screen-quiz">
-    <div class="q-progress-text" id="qProgressText">1 / 12</div>
+    <div class="quiz-top-row">
+      <button class="back-btn" id="backBtn" onclick="backQuestion()">← 이전</button>
+      <div class="q-progress-text" id="qProgressText">1 / 12</div>
+    </div>
     <div class="card">
       <span class="q-number" id="qNumber">Q1.</span>
       <p class="q-text" id="qText"></p>
@@ -479,7 +516,7 @@ const results = {
 
 /* ---------------- 상태 ---------------- */
 let current = 0;
-const answers = { E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0 };
+let userAnswers = new Array(questions.length).fill(null);
 let finalType = "";
 
 /* ---------------- 배경 이모지 ---------------- */
@@ -503,7 +540,7 @@ function startQuiz(){
   document.getElementById('tideBar').classList.add('active');
   document.getElementById('tideLabel').style.display = 'block';
   current = 0;
-  Object.keys(answers).forEach(k=>answers[k]=0);
+  userAnswers = new Array(questions.length).fill(null);
   renderQuestion();
 }
 
@@ -518,22 +555,35 @@ function renderQuestion(){
   q.options.forEach(opt=>{
     const btn = document.createElement('button');
     btn.className = 'opt-btn';
+    if(userAnswers[current] === opt.val){
+      btn.style.borderColor = 'var(--ocean)';
+      btn.style.background = 'var(--foam)';
+    }
     btn.innerHTML = opt.label;
     btn.onclick = ()=>selectAnswer(opt.val);
     optWrap.appendChild(btn);
   });
 
-  const pct = Math.round(((current)/questions.length)*100);
+  document.getElementById('backBtn').style.visibility = current === 0 ? 'hidden' : 'visible';
+
+  const pct = Math.round((current/questions.length)*100);
   document.getElementById('tideFill').style.height = pct+"%";
   document.getElementById('tideLabel').textContent = "🌊 밀물 진행도 "+pct+"%";
 }
 
 function selectAnswer(val){
-  answers[val] += 1;
-  current++;
-  if(current >= questions.length){
-    finishQuiz();
+  userAnswers[current] = val;
+  if(current < questions.length - 1){
+    current++;
+    renderQuestion();
   } else {
+    finishQuiz();
+  }
+}
+
+function backQuestion(){
+  if(current > 0){
+    current--;
     renderQuestion();
   }
 }
@@ -542,11 +592,14 @@ function finishQuiz(){
   document.getElementById('tideFill').style.height = "100%";
   document.getElementById('tideLabel').textContent = "🌊 밀물 진행도 100%";
 
+  const tally = { E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0 };
+  userAnswers.forEach(v=>{ if(v) tally[v] += 1; });
+
   finalType =
-    (answers.E >= answers.I ? "E":"I") +
-    (answers.S >= answers.N ? "S":"N") +
-    (answers.T >= answers.F ? "T":"F") +
-    (answers.J >= answers.P ? "J":"P");
+    (tally.E >= tally.I ? "E":"I") +
+    (tally.S >= tally.N ? "S":"N") +
+    (tally.T >= tally.F ? "T":"F") +
+    (tally.J >= tally.P ? "J":"P");
 
   setTimeout(showResult, 500);
 }
