@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>여름 학교생활 MBTI 테스트 🌊</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --deep-navy:#0A2A4A;
+    --ocean:#0EA5C4;
+    --sky:#8FE3FF;
+    --coral:#FF6B6B;
+    --sun:#FFD166;
+    --sand:#FFF6E5;
+    --foam:#EAFBFF;
+    --ink:#0A2A4A;
+    --shadow: 0 10px 25px rgba(10,42,74,0.18);
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family:'Gowun Dodum', sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 15% 10%, rgba(255,209,102,0.35), transparent 40%),
+      linear-gradient(180deg, var(--sky) 0%, var(--ocean) 45%, var(--deep-navy) 100%);
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  h1,h2,h3,.jua{ font-family:'Jua', sans-serif; }
+
+  /* 떠다니는 여름 이모지 */
+  .floaters{
+    position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;
+  }
+  .floaters span{
+    position:absolute;
+    font-size:2rem;
+    opacity:0.55;
+    animation: drift 14s ease-in-out infinite;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
+  }
+  @keyframes drift{
+    0%   { transform: translateY(0) translateX(0) rotate(0deg); }
+    50%  { transform: translateY(-40px) translateX(20px) rotate(10deg); }
+    100% { transform: translateY(0) translateX(0) rotate(0deg); }
+  }
+
+  .wrap{
+    position:relative; z-index:2;
+    max-width:640px;
+    margin:0 auto;
+    padding:32px 20px 90px;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* 상단 파도 진행바 (시그니처 요소) */
+  .tide-bar{
+    position:fixed;
+    left:0; right:0; bottom:0;
+    height:70px;
+    z-index:5;
+    pointer-events:none;
+    display:none;
+  }
+  .tide-bar.active{ display:block; }
+  .tide-fill{
+    position:absolute; left:0; bottom:0; width:100%;
+    height:0%;
+    transition: height 0.6s cubic-bezier(.4,1.4,.6,1);
+    background: linear-gradient(180deg, rgba(255,255,255,0.5), var(--ocean) 60%);
+  }
+  .tide-wave-svg{
+    position:absolute; top:-18px; left:0; width:200%; height:20px;
+    animation: wave-move 3s linear infinite;
+  }
+  @keyframes wave-move{
+    0%{ transform: translateX(0); }
+    100%{ transform: translateX(-50%); }
+  }
+  .tide-label{
+    position:fixed; bottom:76px; left:50%; transform:translateX(-50%);
+    background: var(--sand);
+    color:var(--deep-navy);
+    padding:6px 14px;
+    border-radius:20px;
+    font-size:0.8rem;
+    box-shadow:var(--shadow);
+    z-index:6;
+    white-space:nowrap;
+  }
+
+  /* 카드 공통 */
+  .card{
+    background: var(--sand);
+    border-radius:28px;
+    box-shadow: var(--shadow);
+    padding:32px 24px;
+    position:relative;
+    border: 3px solid rgba(255,255,255,0.6);
+  }
+
+  /* ---------- 인트로 ---------- */
+  #screen-intro{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    gap:18px;
+  }
+  .badge-eyebrow{
+    background: var(--coral);
+    color:white;
+    font-family:'Jua', sans-serif;
+    padding:6px 16px;
+    border-radius:20px;
+    font-size:0.85rem;
+    letter-spacing:0.5px;
+    box-shadow: 0 4px 10px rgba(255,107,107,0.4);
+  }
+  .title-main{
+    font-size:2.3rem;
+    line-height:1.35;
+    color:white;
+    text-shadow: 0 3px 0 rgba(10,42,74,0.35);
+    margin:0;
+  }
+  .title-main .hi{ color:var(--sun); }
+  .sub-desc{
+    color:var(--foam);
+    font-size:1.02rem;
+    line-height:1.6;
+    max-width:440px;
+  }
+  .start-card{
+    margin-top:10px;
+  }
+  .start-card p{
+    margin:0 0 18px;
+    line-height:1.7;
+    font-size:0.98rem;
+  }
+  .big-btn{
+    display:inline-block;
+    border:none;
+    cursor:pointer;
+    font-family:'Jua', sans-serif;
+    font-size:1.15rem;
+    color:var(--deep-navy);
+    background: linear-gradient(180deg, var(--sun), #ffb703);
+    padding:16px 34px;
+    border-radius:50px;
+    box-shadow: 0 8px 0 #d98c00, 0 12px 20px rgba(0,0,0,0.2);
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .big-btn:active{
+    transform: translateY(6px);
+    box-shadow: 0 2px 0 #d98c00, 0 4px 10px rgba(0,0,0,0.2);
+  }
+  .mini-hint{
+    font-size:0.82rem;
+    color:rgba(255,255,255,0.75);
+    margin-top:6px;
+  }
+
+  /* ---------- 퀴즈 ---------- */
+  #screen-quiz{ display:none; flex:1; flex-direction:column; justify-content:center; gap:18px; }
+  .q-progress-text{
+    color:var(--sand);
+    font-family:'Jua', sans-serif;
+    text-align:center;
+    font-size:0.95rem;
+  }
+  .q-number{
+    color: var(--sun);
+    font-family:'Jua', sans-serif;
+    font-size:0.95rem;
+    margin-bottom:6px;
+    display:block;
+  }
+  .q-text{
+    font-size:1.28rem;
+    line-height:1.55;
+    margin:0 0 22px;
+  }
+  .options{ display:flex; flex-direction:column; gap:12px; }
+  .opt-btn{
+    text-align:left;
+    border:2px solid #dfeef5;
+    background:white;
+    border-radius:18px;
+    padding:16px 18px;
+    font-family:'Gowun Dodum', sans-serif;
+    font-size:1rem;
+    line-height:1.5;
+    cursor:pointer;
+    color:var(--ink);
+    transition: all .15s ease;
+    position:relative;
+  }
+  .opt-btn:hover{
+    border-color: var(--ocean);
+    background: var(--foam);
+    transform: translateX(4px);
+  }
+  .opt-btn .opt-emoji{ margin-right:8px; }
+
+  /* ---------- 결과 ---------- */
+  #screen-result{ display:none; flex:1; flex-direction:column; justify-content:center; gap:16px; text-align:center;}
+  .result-type{
+    font-family:'Jua', sans-serif;
+    font-size:0.95rem;
+    color:var(--coral);
+    letter-spacing:2px;
+  }
+  .result-emoji{ font-size:4.2rem; margin:6px 0; }
+  .result-title{
+    font-size:1.9rem;
+    margin:0 0 6px;
+  }
+  .result-item{
+    font-size:0.95rem;
+    color:#5b7182;
+    margin-bottom:14px;
+  }
+  .result-desc{
+    font-size:1.02rem;
+    line-height:1.75;
+    text-align:left;
+    background: var(--foam);
+    border-radius:18px;
+    padding:18px 20px;
+    margin-bottom:16px;
+  }
+  .stat-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:10px;
+    text-align:left;
+  }
+  .stat-label{
+    width:92px;
+    font-size:0.85rem;
+    color:var(--deep-navy);
+    flex-shrink:0;
+  }
+  .stat-track{
+    flex:1;
+    height:12px;
+    border-radius:8px;
+    background:#e4eef2;
+    overflow:hidden;
+  }
+  .stat-fill{
+    height:100%;
+    border-radius:8px;
+    background: linear-gradient(90deg, var(--ocean), var(--sky));
+    width:0%;
+    transition: width 1s ease;
+  }
+  .result-btns{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    margin-top:8px;
+    flex-wrap:wrap;
+  }
+  .ghost-btn{
+    border:2px solid var(--sand);
+    background: rgba(255,255,255,0.15);
+    color:var(--sand);
+    font-family:'Jua', sans-serif;
+    padding:12px 20px;
+    border-radius:40px;
+    cursor:pointer;
+    font-size:0.95rem;
+  }
+  .ghost-btn:hover{ background: rgba(255,255,255,0.3); }
+  .copy-toast{
+    position:fixed;
+    bottom:20px; left:50%; transform:translateX(-50%);
+    background: var(--deep-navy);
+    color:white;
+    padding:10px 18px;
+    border-radius:20px;
+    font-size:0.85rem;
+    opacity:0;
+    transition: opacity .3s ease;
+    z-index:50;
+    pointer-events:none;
+  }
+  .copy-toast.show{ opacity:1; }
+
+  footer.credit{
+    text-align:center;
+    color:rgba(255,255,255,0.55);
+    font-size:0.75rem;
+    margin-top:24px;
+  }
+
+  @media (max-width:420px){
+    .title-main{ font-size:1.8rem; }
+    .card{ padding:24px 18px; }
+    .result-emoji{ font-size:3.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="floaters" id="floaters"></div>
+
+<div class="tide-bar" id="tideBar">
+  <div class="tide-fill" id="tideFill">
+    <svg class="tide-wave-svg" viewBox="0 0 200 20" preserveAspectRatio="none">
+      <path d="M0 10 Q 12.5 0 25 10 T 50 10 T 75 10 T 100 10 T 125 10 T 150 10 T 175 10 T 200 10 V20 H0 Z" fill="#ffffff" opacity="0.5"/>
+    </svg>
+  </div>
+</div>
+<div class="tide-label" id="tideLabel" style="display:none;">🌊 밀물 진행도 0%</div>
+
+<div class="wrap">
+
+  <!-- 인트로 -->
+  <section id="screen-intro">
+    <div class="badge-eyebrow">SUMMER SCHOOL TEST</div>
+    <h1 class="title-main">너의 <span class="hi">여름 학교생활</span><br>MBTI를 알아볼까?</h1>
+    <p class="sub-desc">급식줄, 조모임, 체육대회, 수학여행까지 — 학교에서 마주치는 찐 상황 12개로 알아보는 나의 진짜 성향. 정확도는... 뭐 재미로 보는 거니까 100%는 아니지만 90%는 됨 🏖️</p>
+
+    <div class="card start-card">
+      <p>준비물: 솔직함 하나면 충분! 파도가 다 차오르면 결과가 짠~ 하고 나타나요.</p>
+      <button class="big-btn" onclick="startQuiz()">테스트 시작하기 🌊</button>
+      <div class="mini-hint">약 12문항 · 1분 소요</div>
+    </div>
+  </section>
+
+  <!-- 퀴즈 -->
+  <section id="screen-quiz">
+    <div class="q-progress-text" id="qProgressText">1 / 12</div>
+    <div class="card">
+      <span class="q-number" id="qNumber">Q1.</span>
+      <p class="q-text" id="qText"></p>
+      <div class="options" id="qOptions"></div>
+    </div>
+  </section>
+
+  <!-- 결과 -->
+  <section id="screen-result">
+    <div class="card">
+      <div class="result-type" id="resultTypeLabel">RESULT</div>
+      <div class="result-emoji" id="resultEmoji">🏖️</div>
+      <h2 class="result-title" id="resultTitle">제목</h2>
+      <div class="result-item" id="resultItem">닮은 여름 아이템: -</div>
+      <div class="result-desc" id="resultDesc">설명</div>
+
+      <div id="resultStats"></div>
+
+      <div class="result-btns">
+        <button class="ghost-btn" onclick="restartQuiz()">🔄 다시하기</button>
+        <button class="ghost-btn" onclick="copyResult()">📋 결과 공유하기</button>
+      </div>
+    </div>
+    <footer class="credit">🌞 학교생활로 알아보는 여름 MBTI 테스트</footer>
+  </section>
+
+</div>
+
+<div class="copy-toast" id="copyToast">결과가 복사됐어요! 친구한테 자랑하기 📤</div>
+
+<script>
+/* ---------------- 데이터 ---------------- */
+const questions = [
+  { text:"급식실 앞, 줄이 미친 듯이 길다. 나는?", axis:"EI",
+    options:[
+      {label:"옆에 서 있는 친구랑 신나게 수다 떨면서 기다린다", val:"E"},
+      {label:"이어폰 끼고 조용히 딴생각하며 버틴다", val:"I"}
+    ]},
+  { text:"체육대회 반 대항전, 나에게 어울리는 포지션은?", axis:"EI",
+    options:[
+      {label:"응원단장! 마이크 잡고 분위기 다 이끈다", val:"E"},
+      {label:"명단 체크하고 물병 나눠주는 조용한 서포터", val:"I"}
+    ]},
+  { text:"조모임 발표 날이 다가왔다. 나는?", axis:"EI",
+    options:[
+      {label:"내가 발표할게! 하고 손부터 번쩍 든다", val:"E"},
+      {label:"PPT는 내가 만들 테니 발표는 다른 친구에게 살짝 미룬다", val:"I"}
+    ]},
+  { text:"수학 문제를 풀 때 나의 스타일은?", axis:"SN",
+    options:[
+      {label:"공식대로 한 줄 한 줄, 검산까지 확실하게", val:"S"},
+      {label:"일단 감으로 찍고, 답이 이상하면 그때 다시 생각", val:"N"}
+    ]},
+  { text:"학교 축제 부스 아이디어 회의 시간, 나는?", axis:"SN",
+    options:[
+      {label:"작년에 대박났던 그 아이템으로 안전하게 가자", val:"S"},
+      {label:"완전 새로운 컨셉! 다들 놀랄 아이디어 있다고 손 든다", val:"N"}
+    ]},
+  { text:"선생님이 내주신 소설 숙제, 나의 독서법은?", axis:"SN",
+    options:[
+      {label:"줄거리와 인물관계를 정확하게 노트에 정리", val:"S"},
+      {label:"결말이 이럴 것 같다는 상상부터 신나게 펼침", val:"N"}
+    ]},
+  { text:"친구가 시험 망쳤다고 엉엉 울고 있다. 나는?", axis:"TF",
+    options:[
+      {label:"오답노트부터 같이 펴서 원인 분석 들어간다", val:"T"},
+      {label:"일단 꽉 안아주고 같이 속상해해준다", val:"F"}
+    ]},
+  { text:"조별과제에서 한 명이 계속 무임승차 중이다. 나는?", axis:"TF",
+    options:[
+      {label:"선생님께 기여도를 솔직하게 있는 그대로 보고한다", val:"T"},
+      {label:"그래도 사정이 있겠지, 한 번 더 기회를 준다", val:"F"}
+    ]},
+  { text:"반장선거 연설을 심사한다면, 나의 기준은?", axis:"TF",
+    options:[
+      {label:"공약이 현실적으로 실현 가능한지가 제일 중요", val:"T"},
+      {label:"얼마나 진심이 느껴지는 연설인지가 제일 중요", val:"F"}
+    ]},
+  { text:"시험 기간이 다가온다. 나는?", axis:"JP",
+    options:[
+      {label:"디데이 세우고 과목별 계획표부터 완벽하게 짠다", val:"J"},
+      {label:"일단 시작... 결국 벼락치기는 나의 운명", val:"P"}
+    ]},
+  { text:"수학여행 가방을 쌀 때 나는?", axis:"JP",
+    options:[
+      {label:"체크리스트 보면서 며칠 전부터 미리미리 챙긴다", val:"J"},
+      {label:"당일 아침에 눈에 보이는 대로 대충대충 넣는다", val:"P"}
+    ]},
+  { text:"갑자기 다음 교시가 자습으로 바뀐다! 나는?", axis:"JP",
+    options:[
+      {label:"당황스럽다... 원래 계획했던 걸 마저 하기로 한다", val:"J"},
+      {label:"완전 좋아! 즉흥적으로 뭐 하고 놀지부터 고민한다", val:"P"}
+    ]}
+];
+
+const results = {
+  ISTJ:{ emoji:"📚", title:"타임테이블 지킴이", item:"칼각 접힌 튜브", stats:{계획력:95,사교성:35,감성:30,모험심:25},
+    desc:"교실 시계보다 정확한 사람. 쉬는 시간 10분도 낭비 없이 계획대로 흘러가야 마음이 편해요. 여름방학 계획표도 이미 색깔별로 완성했을 듯. 다만 갑자기 계획이 틀어지면... 약간의 지진이 남습니다."},
+  ISFJ:{ emoji:"🍉", title:"급식실 든든이", item:"시원한 수박화채", stats:{계획력:75,사교성:55,감성:80,모험심:20},
+    desc:"반 친구들 생일, 준비물, 심지어 짝꿍 알레르기까지 다 기억하는 우리 반의 숨은 살림꾼. 나서는 걸 좋아하진 않지만 누군가 힘들어하면 제일 먼저 챙겨주는 타입. 급식 후식 남으면 꼭 챙겨주는 다정함 보유."},
+  INFJ:{ emoji:"🌙", title:"야자실 감성 시인", item:"밤바다 감성 필름카메라", stats:{계획력:60,사교성:30,감성:95,모험심:40},
+    desc:"야간자율학습 시간, 창밖 노을 보면서 인생에 대해 사색하는 타입. 겉으론 조용하지만 속엔 우주 하나가 들어있어요. 갑자기 툭 던지는 한마디가 명언 수준이라 다들 놀람."},
+  INTJ:{ emoji:"🧊", title:"전교 1등 전략가", item:"각 잡힌 얼음컵", stats:{계획력:98,사교성:25,감성:20,모험심:35},
+    desc:"3년치 내신 로드맵이 이미 머릿속에 있는 전략가. 감정보다 데이터, 분위기보다 효율을 믿습니다. 조모임에서 은근슬쩍 팀 전체를 이끄는 숨은 실세이기도."},
+  ISTP:{ emoji:"🔧", title:"만능 손재주 반장", item:"수리 완료된 튜브 펌프", stats:{계획력:55,사교성:40,감성:25,모험심:70},
+    desc:"프로젝터 안 켜지면 조용히 나와서 고쳐주는 그 친구. 말은 별로 없지만 위기 상황엔 제일 먼저 움직입니다. 체육대회 도구 세팅도 알아서 척척, 리액션은 없어도 실력은 확실."},
+  ISFP:{ emoji:"📷", title:"감성 사진작가", item:"필름 카메라와 조개껍데기", stats:{계획력:40,사교성:45,감성:85,모험심:55},
+    desc:"수학여행 사진첩 담당자는 늘 이 사람. 화려하게 나서진 않지만 순간의 예쁜 장면을 놓치지 않는 눈을 가졌어요. 자기 스타일이 확고해서 은근 부러움을 삽니다."},
+  INFP:{ emoji:"🐚", title:"몽상가 시인", item:"파도 소리 담은 소라고둥", stats:{계획력:35,사교성:35,감성:98,모험심:50},
+    desc:"수업 시간에 창밖 보다가 갑자기 소설 한 편 써버릴 것 같은 몽상가. 감정이 풍부해서 친구 고민 상담은 다 여기로 몰립니다. 다만 발표 순서 다가오면 세상이 무너진 표정."},
+  INTP:{ emoji:"🧠", title:"쉬는시간 철학자", item:"수학 공식 낙서한 부채", stats:{계획력:45,사교성:30,감성:35,모험심:45},
+    desc:"쉬는 시간에 갑자기 \"근데 시간은 왜 존재할까\" 같은 질문을 던지는 타입. 관심 있는 과목엔 끝없이 파고들지만 흥미 없는 건 칼같이 안 함. 조모임에서 반박은 논리적으로 완벽하게 함."},
+  ESTP:{ emoji:"🏄", title:"체육대회 에이스", item:"방금 개시한 서핑보드", stats:{계획력:30,사교성:80,감성:40,모험심:95},
+    desc:"체육대회만 되면 눈빛이 달라지는 우리 반 에이스. 일단 몸이 먼저 움직이고 생각은 나중. 위기의 순간에 제일 빛나는 타입이라 반 대표 계주는 무조건 이 사람 몫."},
+  ESFP:{ emoji:"🍦", title:"학교 분위기 메이커", item:"녹기 직전 아이스크림", stats:{계획력:25,사교성:95,감성:70,모험심:80},
+    desc:"이 사람 없으면 반 분위기가 갑자기 조용해지는 그 존재. 어디서든 텐션 최고, 쉬는 시간마다 새로운 이벤트를 만듭니다. 시험 기간에도 웃음은 잃지 않는 긍정 에너지 뿜뿜."},
+  ENFP:{ emoji:"🎈", title:"축제 기획 요정", item:"바람 빵빵한 비치볼", stats:{계획력:50,사교성:90,감성:85,모험심:75},
+    desc:"학교 축제 기획서에 아이디어를 500개쯤 던지는 상상력 뿜뿜 요정. 사람도 좋아하고 새로운 것도 좋아해서 늘 반 분위기 중심에 있어요. 다만 계획은 아이디어 낼 때까지만 완벽함."},
+  ENTP:{ emoji:"🗣️", title:"토론왕 반박러", item:"선크림 대신 논리로 무장", stats:{계획력:40,사교성:75,감성:35,모험심:70},
+    desc:"토론 수업만 되면 눈이 반짝이는 타입. 선생님 질문에도 논리적으로 반박하는 배짱 보유. 심심하면 괜히 친구 의견에 딴지 걸며 즐거워하는 장난꾸러기."},
+  ESTJ:{ emoji:"📋", title:"반장 of 반장", item:"완벽하게 짜인 조 편성표", stats:{계획력:90,사교성:70,감성:30,모험심:35},
+    desc:"학급 규칙, 청소 당번표, 조모임 역할까지 다 정리해주는 진짜 반장 그 자체. 효율과 원칙을 제일 중요하게 생각해서 반이 이 사람 덕분에 잘 굴러갑니다."},
+  ESFJ:{ emoji:"🌻", title:"반 인싸 살림꾼", item:"다 같이 나눠먹는 수박", stats:{계획력:70,사교성:88,감성:75,모험심:40},
+    desc:"생일 챙기기, 반 단체 카톡방 운영, 다 이 사람 손에서 나옵니다. 다정하고 다 챙겨주는 타입이라 어디서든 반 분위기 중심에 서 있어요."},
+  ENFJ:{ emoji:"📣", title:"학급 응원단장", item:"응원봉과 시원한 이온음료", stats:{계획력:65,사교성:92,감성:80,모험심:55},
+    desc:"체육대회든 축제든 반 전체를 하나로 모으는 리더십 보유자. 친구들 고민도 잘 들어주고 앞장서서 응원해주는, 우리 반의 진짜 태양 같은 존재."},
+  ENTJ:{ emoji:"🚀", title:"미래의 CEO", item:"자체 제작 여름방학 사업계획서", stats:{계획력:92,사교성:65,감성:25,모험심:60},
+    desc:"조모임 하면 어느새 팀장이 되어있는 타고난 리더. 목표를 정하면 반드시 이뤄내는 추진력의 소유자라 벌써 미래 CEO 각이 보입니다."}
+};
+
+/* ---------------- 상태 ---------------- */
+let current = 0;
+const answers = { E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0 };
+let finalType = "";
+
+/* ---------------- 배경 이모지 ---------------- */
+const emojiList = ["🌊","☀️","🍉","🕶️","🍦","🐚","🏖️","🐬"];
+const floaterHost = document.getElementById('floaters');
+emojiList.forEach((e,i)=>{
+  const s = document.createElement('span');
+  s.textContent = e;
+  s.style.left = (Math.random()*90)+"%";
+  s.style.top = (Math.random()*85)+"%";
+  s.style.animationDelay = (Math.random()*6)+"s";
+  s.style.animationDuration = (10+Math.random()*8)+"s";
+  s.style.fontSize = (1.4+Math.random()*1.6)+"rem";
+  floaterHost.appendChild(s);
+});
+
+/* ---------------- 로직 ---------------- */
+function startQuiz(){
+  document.getElementById('screen-intro').style.display = 'none';
+  document.getElementById('screen-quiz').style.display = 'flex';
+  document.getElementById('tideBar').classList.add('active');
+  document.getElementById('tideLabel').style.display = 'block';
+  current = 0;
+  Object.keys(answers).forEach(k=>answers[k]=0);
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q = questions[current];
+  document.getElementById('qProgressText').textContent = (current+1)+" / "+questions.length;
+  document.getElementById('qNumber').textContent = "Q"+(current+1)+".";
+  document.getElementById('qText').textContent = q.text;
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = "";
+  q.options.forEach(opt=>{
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.innerHTML = opt.label;
+    btn.onclick = ()=>selectAnswer(opt.val);
+    optWrap.appendChild(btn);
+  });
+
+  const pct = Math.round(((current)/questions.length)*100);
+  document.getElementById('tideFill').style.height = pct+"%";
+  document.getElementById('tideLabel').textContent = "🌊 밀물 진행도 "+pct+"%";
+}
+
+function selectAnswer(val){
+  answers[val] += 1;
+  current++;
+  if(current >= questions.length){
+    finishQuiz();
+  } else {
+    renderQuestion();
+  }
+}
+
+function finishQuiz(){
+  document.getElementById('tideFill').style.height = "100%";
+  document.getElementById('tideLabel').textContent = "🌊 밀물 진행도 100%";
+
+  finalType =
+    (answers.E >= answers.I ? "E":"I") +
+    (answers.S >= answers.N ? "S":"N") +
+    (answers.T >= answers.F ? "T":"F") +
+    (answers.J >= answers.P ? "J":"P");
+
+  setTimeout(showResult, 500);
+}
+
+function showResult(){
+  document.getElementById('screen-quiz').style.display = 'none';
+  document.getElementById('tideBar').classList.remove('active');
+  document.getElementById('tideLabel').style.display = 'none';
+  document.getElementById('screen-result').style.display = 'flex';
+
+  const r = results[finalType];
+  document.getElementById('resultTypeLabel').textContent = finalType + " 유형";
+  document.getElementById('resultEmoji').textContent = r.emoji;
+  document.getElementById('resultTitle').textContent = r.title;
+  document.getElementById('resultItem').textContent = "닮은 여름 아이템: " + r.item;
+  document.getElementById('resultDesc').textContent = r.desc;
+
+  const statsWrap = document.getElementById('resultStats');
+  statsWrap.innerHTML = "";
+  Object.entries(r.stats).forEach(([label,val])=>{
+    const row = document.createElement('div');
+    row.className = 'stat-row';
+    row.innerHTML = `<div class="stat-label">${label}</div><div class="stat-track"><div class="stat-fill" style="width:0%"></div></div>`;
+    statsWrap.appendChild(row);
+    setTimeout(()=>{ row.querySelector('.stat-fill').style.width = val+"%"; }, 100);
+  });
+}
+
+function restartQuiz(){
+  document.getElementById('screen-result').style.display = 'none';
+  document.getElementById('screen-intro').style.display = 'flex';
+}
+
+function copyResult(){
+  const r = results[finalType];
+  const text = `나의 여름 학교생활 MBTI는 [${finalType}] ${r.title} ${r.emoji}\n"${r.desc}"\n너도 테스트 해봐! 🌊`;
+  const toast = document.getElementById('copyToast');
+  navigator.clipboard.writeText(text).then(()=>{
+    toast.classList.add('show');
+    setTimeout(()=>toast.classList.remove('show'), 2200);
+  }).catch(()=>{
+    toast.textContent = "복사가 안 됐어요, 직접 캡처해서 공유해주세요 📸";
+    toast.classList.add('show');
+    setTimeout(()=>toast.classList.remove('show'), 2200);
+  });
+}
+</script>
+</body>
+</html>
